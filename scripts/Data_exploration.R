@@ -1,7 +1,19 @@
 require('readstata13')
 #####
-dir  <- "D:/HUANUCO"
+
+################################
+#Workspace 
+#####
+dir  <- "D:/AICHI13/Huanuco"
 trans_dir <- paste0(dir,"/","csv");if(!file.exists(trans_dir)){dir.create(trans_dir)}
+trans_process_dir <- paste0(trans_dir,"/","processing");if(!file.exists(trans_process_dir)){dir.create(trans_process_dir)}
+
+trans_results_dir <- paste0(trans_dir,"/","results");if(!file.exists(trans_results_dir)){dir.create(trans_results_dir)}
+
+plot_dir <- paste0(dir,"/","plot");if(!file.exists(plot_dir)){dir.create(plot_dir)}
+plot_full_dir <- paste0(plot_dir,"/","full");if(!file.exists(plot_full_dir)){dir.create(plot_full_dir)}
+plot_reg_dir <- paste0(plot_dir,"/","region");if(!file.exists(plot_reg_dir)){dir.create(plot_reg_dir)}
+
 ###
 #Defining Subset function
 Subset <- function(df, pattern) {
@@ -14,7 +26,7 @@ data <- as.data.frame(readstata13::read.dta13(paste0(dir,"/","Carasso_Agrobiodiv
                                 convert.factors=T)
 )
 #saving colnames information
-write.csv(colnames(data),paste0(trans_dir,"/colnames.csv"),row.names=F,quote=F)
+write.csv(colnames(data),paste0(trans_process_dir,"/colnames.csv"),row.names=F,quote=F)
 
 #defining Q1 module questions 
 vars_q1 <- c(
