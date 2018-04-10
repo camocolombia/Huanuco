@@ -7,10 +7,20 @@
 dir  <- "D:/AICHI13/Huanuco"
 trans_dir <- paste0(dir,"/","csv");if(!file.exists(trans_dir)){dir.create(trans_dir)}
 plot_dir <- paste0(dir,"/","plot")
+trans_process_dir <- paste0(trans_dir,"/","processing");if(!file.exists(trans_process_dir)){dir.create(trans_process_dir)}
+
+trans_results_dir <- paste0(trans_dir,"/","results");if(!file.exists(trans_results_dir)){dir.create(trans_results_dir)}
+
+plot_dir <- paste0(dir,"/","plot");if(!file.exists(plot_dir)){dir.create(plot_dir)}
+plot_full_dir <- paste0(plot_dir,"/","full");if(!file.exists(plot_full_dir)){dir.create(plot_full_dir)}
+plot_reg_dir <- paste0(plot_dir,"/","region");if(!file.exists(plot_reg_dir)){dir.create(plot_reg_dir)}
+
+#
 ################################
 #Reading RDS file to be used in clustering
 
-final_table <- readRDS(paste0(trans_dir,"/","cluster_table.RDS"))
+final_table <- readRDS(paste0(trans_results_dir,"/","cluster_table.RDS"))
+final_table <- final_table[,-c(3,5)]
 clus<-unique(final_table$clust)
 
 tmp<-list()
@@ -89,4 +99,4 @@ final<-do.call("rbind",tmp)
 final<-rbind(total,final)
 final$item <- row.names(final)
 final <- final[,c(8,1:7)]
-write.table(final,paste0(trans_dir,"/","SUMMARY_CLUSTER.csv"),quote=F,row.names = F,sep = "|")
+write.table(final,paste0(trans_results_dir,"/","SUMMARY_CLUSTER.csv"),quote=F,row.names = F,sep = "|")

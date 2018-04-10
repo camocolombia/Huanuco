@@ -7,11 +7,19 @@ require(FactoMineR);require(factoextra);require(cluster);require(NbClust)
 #####
 dir  <- "D:/AICHI13/Huanuco"
 trans_dir <- paste0(dir,"/","csv");if(!file.exists(trans_dir)){dir.create(trans_dir)}
+plot_dir <- paste0(dir,"/","plot")
+trans_process_dir <- paste0(trans_dir,"/","processing");if(!file.exists(trans_process_dir)){dir.create(trans_process_dir)}
+
+trans_results_dir <- paste0(trans_dir,"/","results");if(!file.exists(trans_results_dir)){dir.create(trans_results_dir)}
+
+plot_dir <- paste0(dir,"/","plot");if(!file.exists(plot_dir)){dir.create(plot_dir)}
+plot_full_dir <- paste0(plot_dir,"/","full");if(!file.exists(plot_full_dir)){dir.create(plot_full_dir)}
+plot_reg_dir <- paste0(plot_dir,"/","region");if(!file.exists(plot_reg_dir)){dir.create(plot_reg_dir)}
 ###
 
 
 #http://factominer.free.fr/course/doc/MFA_course_slides.pdf
-tab3 <- readRDS(paste0(trans_dir,"/","firstStep.RDS"))
+tab3 <- readRDS(paste0(trans_results_dir,"/","firstStep.RDS"))
 
 #variables with NAs
 #c("alt_mean","wealthindex","inc","per_sale")
@@ -22,7 +30,7 @@ for(i in 1:ncol(tab3_alt)){
 }
 tab3_alt <- tab3_alt[complete.cases(tab3_alt),]
 #saving table
-write.table(tab3_alt,paste0(trans_dir,"/","table_q1_join.csv"),quote=F,row.names = T,sep=",")
+write.table(tab3_alt,paste0(trans_process_dir,"/","table_q1_join.csv"),quote=F,row.names = T,sep=",")
 
 # plot(ACP)
 # plot.PCA(ACP,choix = "var")
@@ -38,14 +46,15 @@ tab3_alt2 <-tab3_alt
 
 
 tab3_alt2 <- tab3_alt2[,c(2:8,1,9:27)]
+tab3_alt2 <- tab3_alt2[,-c(3,5)]
 for(i in 1:ncol(tab3_alt2)){cat(class(tab3_alt2[,i])," | ",i,"\n")}
 #corrplot::corrplot(cor(tab3_alt2[,c(1:7,14:27)]))
 
-ACP <- FactoMineR::PCA(tab3_alt,quali.sup = c(1,9,10,11,12,13),quanti.sup = 25,ncp=10,scale.unit = T,graph = T)
+#ACP <- FactoMineR::PCA(tab3_alt,quali.sup = c(1,9,10,11,12,13),quanti.sup = 25,ncp=10,scale.unit = T,graph = T)
 
 MFA_2 <- FactoMineR::MFA(base=tab3_alt2,
                          # group = c(1,7,5,5,7),
-                         group = c(7,6,5,9),
+                         group = c(5,6,5,9),
                          # type = c("n","c","n","c","c"),
                          type = c("c","n","c","c"),
                          

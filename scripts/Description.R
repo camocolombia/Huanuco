@@ -8,11 +8,20 @@ require(FactoMineR);require(factoextra);require(cluster);require(NbClust);librar
 dir  <- "D:/AICHI13/Huanuco"
 trans_dir <- paste0(dir,"/","csv");if(!file.exists(trans_dir)){dir.create(trans_dir)}
 plot_dir <- paste0(dir,"/","plot")
+trans_process_dir <- paste0(trans_dir,"/","processing");if(!file.exists(trans_process_dir)){dir.create(trans_process_dir)}
+
+trans_results_dir <- paste0(trans_dir,"/","results");if(!file.exists(trans_results_dir)){dir.create(trans_results_dir)}
+
+plot_dir <- paste0(dir,"/","plot");if(!file.exists(plot_dir)){dir.create(plot_dir)}
+plot_full_dir <- paste0(plot_dir,"/","full");if(!file.exists(plot_full_dir)){dir.create(plot_full_dir)}
+plot_reg_dir <- paste0(plot_dir,"/","region");if(!file.exists(plot_reg_dir)){dir.create(plot_reg_dir)}
+
+#
 ################################
 #Reading RDS file to be used in clustering
 #http://factominer.free.fr/course/doc/MFA_course_slides.pdf
-tab3 <- readRDS(paste0(trans_dir,"/","firstStep.RDS"))
-final_table <- readRDS(paste0(trans_dir,"/","cluster_table.RDS"))
+tab3 <- readRDS(paste0(trans_results_dir,"/","firstStep.RDS"))
+final_table <- readRDS(paste0(trans_results_dir,"/","cluster_table.RDS"))
 
 
 ################################
@@ -73,12 +82,12 @@ fish_table_t[lower.tri(fish_table_t)] <- NA
 fish_table_t[lower.tri(fish_table_t)] <-t(fish_table_t)[lower.tri(t(fish_table_t))]
 #as.numeric(t(fish_table_t[upper.tri(fish_table_t)]))
 heatmap(fish_table_t,na.rm=T,symm=T,col=c("gray","black"),keep.dendro=F,Rowv=NA)
-write.table(fish_table,paste0(trans_dir,"/","fisher.csv"),quote=F,row.names = T,sep=",")
+write.table(fish_table,paste0(trans_results_dir,"/","fisher.csv"),quote=F,row.names = T,sep=",")
 
 ################################
 #Calculating correlations for numerical variables
 
-cor2 <- cor(tab3_alt2[,c(1:7,14:27)])
+cor2 <- cor(tab3_alt2[,c(1,2,4,6,7,14:27)])
 corrplot::corrplot(cor2)
 write.table(cor2,paste0(trans_dir,"/","correlations.csv"),quote=F,row.names = T,sep=",")
 
@@ -90,7 +99,7 @@ plot_reg_dir <- paste0(plot_dir,"/","region")
 
 black.bold.italic.16.text <- element_text(face = "italic", color = "black", size = 30)
 
-numerical <- tab3_alt2[,c(1:7,14:27)]
+numerical <- tab3_alt2[,c(1,2,4,6,7,14:27)]
 numerical$cluster <- NA; numerical$cluster <- final_table$clust
 numerical$region <- NA;numerical$region  <- final_table$region
 for( i in 1:(ncol(numerical)-2)){
@@ -154,6 +163,6 @@ for( i in 1:(ncol(numerical)-2)){
 fviz_mfa_ind(MFA_2,
              label = "none", # hide individual labels
              habillage = final_table$clust, # color by groups
-             palette = c("#00AFBB", "#E7B800", "#FC4E07"),
+           #  palette = c("#00AFBB", "#E7B800", "#FC4E07"),
              addEllipses = TRUE,
              ellipse.type = "convex" )# Concentration ellipses)
