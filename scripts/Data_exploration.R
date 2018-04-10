@@ -6,15 +6,16 @@ require('readstata13')
 #####
 dir  <- "D:/AICHI13/Huanuco"
 trans_dir <- paste0(dir,"/","csv");if(!file.exists(trans_dir)){dir.create(trans_dir)}
+trans_dir <- paste0(dir,"/","csv");if(!file.exists(trans_dir)){dir.create(trans_dir)}
 trans_process_dir <- paste0(trans_dir,"/","processing");if(!file.exists(trans_process_dir)){dir.create(trans_process_dir)}
 
 trans_results_dir <- paste0(trans_dir,"/","results");if(!file.exists(trans_results_dir)){dir.create(trans_results_dir)}
 
 plot_dir <- paste0(dir,"/","plot");if(!file.exists(plot_dir)){dir.create(plot_dir)}
+plot_cluster_dir <- paste0(plot_dir,"/","cluster");if(!file.exists(plot_cluster_dir)){dir.create(plot_cluster_dir)}
 plot_full_dir <- paste0(plot_dir,"/","full");if(!file.exists(plot_full_dir)){dir.create(plot_full_dir)}
 plot_reg_dir <- paste0(plot_dir,"/","region");if(!file.exists(plot_reg_dir)){dir.create(plot_reg_dir)}
-
-###
+plot_descrip_dir <- paste0(plot_dir,"/","description");if(!file.exists(plot_descrip_dir)){dir.create(plot_descrip_dir)}###
 #Defining Subset function
 Subset <- function(df, pattern) {
   ind <- grepl(pattern=pattern, colnames(df))
@@ -195,7 +196,7 @@ colnames(q1)<-c(info_vars,"q01","q02",vars_q1)
 #saving Q1 information
 
 q1 <- q1[which(q1$q02=="Si"),]
-write.table(q1,paste0(trans_dir,"/q1.csv"),row.names=F,quote=F,na="",sep="|")
+write.table(q1,paste0(trans_process_dir,"/q1.csv"),row.names=F,quote=F,na="",sep="|")
 
 ##########################################################################################################################################
 ##########################################################################################################################################
@@ -258,7 +259,7 @@ for(j in 20:ncol(q2)){
 colnames(q2)<-c(info_vars,"q01","q11",vars_q2)
 
 q2 <- q2[which(q2$q11=="Si"),]
-write.table(q2,paste0(trans_dir,"/q2.csv"),row.names=F,quote=F,na="",sep="|")
+write.table(q2,paste0(trans_process_dir,"/q2.csv"),row.names=F,quote=F,na="",sep="|")
 
 ##########################################################################################################################################
 ##########################################################################################################################################
@@ -337,4 +338,4 @@ aux <- as.data.frame(matrix(ncol=length(info_var_aux),nrow=nrow(data)))
 colnames(aux) <- info_var_aux
 
 aux <- data[,info_var_aux]
-write.table(aux,paste0(trans_dir,"/auxiliar_vars.csv"),row.names=F,quote=F,na="",sep="|")
+write.table(aux,paste0(trans_process_dir,"/auxiliar_vars.csv"),row.names=F,quote=F,na="",sep="|")

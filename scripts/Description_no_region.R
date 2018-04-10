@@ -22,7 +22,7 @@ plot_descrip_dir <- paste0(plot_dir,"/","description");if(!file.exists(plot_desc
 #Reading RDS file to be used in clustering
 #http://factominer.free.fr/course/doc/MFA_course_slides.pdf
 tab3 <- readRDS(paste0(trans_results_dir,"/","firstStep.RDS"))
-final_table <- readRDS(paste0(trans_results_dir,"/","cluster_table.RDS"))
+final_table <- readRDS(paste0(trans_results_dir,"/","cluster_table_NO_REGION.RDS"))
 
 
 ################################
@@ -36,10 +36,11 @@ for(i in 1:ncol(tab3_alt)){
 }
 tab3_alt <- tab3_alt[complete.cases(tab3_alt),]
 
-tab3_alt2 <-tab3_alt
 
 ################################
-tab3_alt2 <- tab3_alt2[,c(2:8,1,9:27)]
+tab3_alt2 <- tab3_alt[,c(2:8,1,9:27)]
+tab3_alt2 <-tab3_alt[-c(8)]
+
 ################################
 #Fisher exact test and graphic
 fish_table <- as.data.frame(matrix(ncol=6,nrow=6));
@@ -83,14 +84,14 @@ fish_table_t[lower.tri(fish_table_t)] <- NA
 fish_table_t[lower.tri(fish_table_t)] <-t(fish_table_t)[lower.tri(t(fish_table_t))]
 #as.numeric(t(fish_table_t[upper.tri(fish_table_t)]))
 
-png(paste0(plot_descrip_dir,"/","heatmap_fisher","_",Sys.Date(),".png"),width = 900,height = 600)   
+png(paste0(plot_descrip_dir,"/","heatmap_fisher","_NO_REGION_",Sys.Date(),".png"),width = 900,height = 600)   
 heatmap(fish_table_t,na.rm=T,symm=T,col=c("gray","black"),keep.dendro=F,Rowv=NA)
 dev.off()
 
 
 fish_table$variable <- row.names(fish_table)
 fish_table <- fish_table[,c(ncol(fish_table),1:((ncol(fish_table)-1)))]
-write.table(fish_table,paste0(trans_results_dir,"/","fisher.csv"),quote=F,row.names = F,sep="|")
+write.table(fish_table,paste0(trans_results_dir,"/","fisher_NO_REGION.csv"),quote=F,row.names = F,sep="|")
 
 ################################
 #Calculating correlations for numerical variables
@@ -108,7 +109,7 @@ write.table(cor2,paste0(trans_results_dir,"/","correlations.csv"),quote=F,row.na
 #Boxplots per variable
 black.bold.italic.16.text <- element_text(face = "italic", color = "black", size = 30)
 
-numerical <- tab3_alt2[,c(1,2,4,6,7,14:27)]
+numerical <- tab3_alt2[,c(2,3,5,7,13:26)]
 numerical$cluster <- NA; numerical$cluster <- final_table$clust
 numerical$region <- NA;numerical$region  <- final_table$region
 for( i in 1:(ncol(numerical)-2)){
@@ -120,7 +121,7 @@ for( i in 1:(ncol(numerical)-2)){
     #scale_fill_manual(labels=levels(taxa_sub$Dormancy_cat),values = unique(taxa_sub$color))+
     #scale_colour_manual(labels =unique(taxa_sub$Dormancy_cat),values = unique(taxa_sub$color))+
     #c("#0035ff","#00ff19","#faff00","#e60b00")
-   # scale_fill_manual(name="region\n",labels = levels(taxa_sub$Dormancy_cat),values = c("#799244","#c3d69b","#f2dcdb","#d99694"))+
+    # scale_fill_manual(name="region\n",labels = levels(taxa_sub$Dormancy_cat),values = c("#799244","#c3d69b","#f2dcdb","#d99694"))+
     xlab("Cluster") +
     ylab(colnames(numerical)[i])+  
     #ggtitle(NAME) + 
@@ -128,7 +129,7 @@ for( i in 1:(ncol(numerical)-2)){
     #theme(panel.background = element_rect(fill = "gray95"),text=element_text(size=42),axis.text.x  = element_text(size=42,colour="black"),axis.text.y  = element_text(size=42,colour="black"),legend.position="none")+ 
     theme(panel.background = element_rect(fill = "gray90"),text=element_text(size=36),axis.text.x  =black.bold.italic.16.text,axis.text.y  = element_text(size=30,colour="black"),legend.title=element_text(size=36,colour="black"))
   
-  ggsave(paste0(plot_full_dir,"/",as.character(colnames(numerical)[i]),"_",Sys.Date(),".pdf"),prom, units="in",width=20,height=9,scale=2,dpi=600)
+  ggsave(paste0(plot_full_dir,"/",as.character(colnames(numerical)[i]),"_NO_REGION_",Sys.Date(),".pdf"),prom, units="in",width=20,height=9,scale=2,dpi=600)
   ########
   prom1<-ggplot(numerical, aes(x =cluster, y =numerical[,i] ,fill=region)) +
     geom_boxplot()+
@@ -144,7 +145,7 @@ for( i in 1:(ncol(numerical)-2)){
     #theme(panel.background = element_rect(fill = "gray95"),text=element_text(size=42),axis.text.x  = element_text(size=42,colour="black"),axis.text.y  = element_text(size=42,colour="black"),legend.position="none")+ 
     theme(panel.background = element_rect(fill = "gray90"),text=element_text(size=36),axis.text.x  =black.bold.italic.16.text,axis.text.y  = element_text(size=30,colour="black"),legend.title=element_text(size=36,colour="black"))
   
-  ggsave(paste0(plot_reg_dir,"/",as.character(colnames(numerical)[i]),"_",Sys.Date(),".pdf"),prom1, units="in",width=20,height=9,scale=2,dpi=600)
+  ggsave(paste0(plot_reg_dir,"/",as.character(colnames(numerical)[i]),"_NO_REGION_",Sys.Date(),".pdf"),prom1, units="in",width=20,height=9,scale=2,dpi=600)
   
   
 }

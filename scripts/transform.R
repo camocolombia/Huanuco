@@ -12,14 +12,16 @@ require(FactoMineR);require(factoextra);require(cluster);require(NbClust)
 #####
 dir  <- "D:/AICHI13/Huanuco"
 trans_dir <- paste0(dir,"/","csv");if(!file.exists(trans_dir)){dir.create(trans_dir)}
+trans_dir <- paste0(dir,"/","csv");if(!file.exists(trans_dir)){dir.create(trans_dir)}
 trans_process_dir <- paste0(trans_dir,"/","processing");if(!file.exists(trans_process_dir)){dir.create(trans_process_dir)}
 
 trans_results_dir <- paste0(trans_dir,"/","results");if(!file.exists(trans_results_dir)){dir.create(trans_results_dir)}
 
 plot_dir <- paste0(dir,"/","plot");if(!file.exists(plot_dir)){dir.create(plot_dir)}
+plot_cluster_dir <- paste0(plot_dir,"/","cluster");if(!file.exists(plot_cluster_dir)){dir.create(plot_cluster_dir)}
 plot_full_dir <- paste0(plot_dir,"/","full");if(!file.exists(plot_full_dir)){dir.create(plot_full_dir)}
 plot_reg_dir <- paste0(plot_dir,"/","region");if(!file.exists(plot_reg_dir)){dir.create(plot_reg_dir)}
-
+plot_descrip_dir <- paste0(plot_dir,"/","description");if(!file.exists(plot_descrip_dir)){dir.create(plot_descrip_dir)}
 #
 ###
 ################################
@@ -35,7 +37,7 @@ for(i in 2:6){
 };rm(i)
             ####################
 #Reading auxiliar vars
-aux <- read.csv(paste0(dir,"/","csv/auxiliar_vars.csv"),header=T,na="",sep="|")
+aux <- read.csv(paste0(trans_process_dir,"/","auxiliar_vars.csv"),header=T,na="",sep="|")
 
 ###Transforming Si and No options to 0 and 1
 
@@ -59,7 +61,7 @@ for( i in 1:length(vars)){
 ################################
 ################################
 #Reading Q1 table
-q1 <- read.csv(paste0(dir,"/csv/","q1.csv"),header=T,na="",sep="|")
+q1 <- read.csv(paste0(trans_process_dir,"/","q1.csv"),header=T,na="",sep="|")
 q1 <- q1[-c(3,14,17,22,32,36,50,59)]
 #choosing factor variables
 #q1_vars <- c(3,5,7:15,17:19,21:32,34:43,44:51)
@@ -348,3 +350,4 @@ for(i in 1:ncol(tab3)){
 
 #saving table
 saveRDS(tab3,paste0(trans_results_dir,"/","firstStep.RDS"))
+

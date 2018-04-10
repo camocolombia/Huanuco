@@ -60,6 +60,10 @@ tab3_alt2_alt <- cbind(sc[,c(1:5)],tab3_alt2[,6:11],sc[,c(6:19)])#sc[,c(1:7)],ta
 # }
 #for(i in 1:ncol(tab3_alt2_alt)){cat(class(tab3_alt2_alt[,i])," | ",i,"\n")}  # print class per column
 
+
+
+tab3_alt2 <- tab3_alt2[,-c(6)]
+tab3_alt2_alt <- tab3_alt2_alt[,-c(6)]
 ################################
 #Calculating Gower distance for all data (categorical + numeric)
 
@@ -121,7 +125,7 @@ maxNumb <- 20
 #barplot(sort(ClusterEvents$height,decreasing=T)[1:maxNumb],names.arg=1:maxNumb,col="lightseagreen",main="Select the number of Cluster",xlab="Number of cluster",ylab="height") 
 
 
-png(paste0(plot_cluster_dir,"/","barplotGraph","_",Sys.Date(),".png"),width = 900,height = 600)   
+png(paste0(plot_cluster_dir,"/","barplotGraph","_NO_REGION_",Sys.Date(),".png"),width = 900,height = 600)   
 
 
 barplot(sort(ClusterEvents_sc$height,decreasing=T)[1:maxNumb],names.arg=1:maxNumb,col="lightseagreen",main="Select the number of Cluster",xlab="Number of cluster",ylab="height") 
@@ -139,7 +143,7 @@ dev.off()
 #   xlab="Number of clusters", ylab="Average Silhouette", type="b", pch=20)
 
 
-png(paste0(plot_cluster_dir,"/","silhouette","_",Sys.Date(),".png"),width = 900,height = 600)   
+png(paste0(plot_cluster_dir,"/","silhouette","_NO_REGION_",Sys.Date(),".png"),width = 900,height = 600)   
 
 plot(2:50, sapply(2:50, function(i) { 
   cat(i,"\n")
@@ -153,7 +157,7 @@ dev.off()
 ### Sum of square criteria (Elbow)
 wss_plot <- factoextra::fviz_nbclust(x=tab3_alt2_alt,FUN=hcut,diss=gow.mat_sc,k.max=50,method=c("wss"))#c("silhouette","wss","gap_stat")
 #factoextra::fviz_nbclust(x=tab3_alt2_alt,FUN=hcut,diss=gow.mat_sc,k.max=50,method=c("silhouette"))#c("silhouette","wss","gap_stat")
-ggsave(paste0(plot_cluster_dir,"/","WSS_plot","_",Sys.Date(),".png"),wss_plot, units="in",width=20,height=9,scale=1,dpi=600)
+ggsave(paste0(plot_cluster_dir,"/","WSS_plot","_NO_REGION_",Sys.Date(),".png"),wss_plot, units="in",width=20,height=9,scale=1,dpi=600)
 
 ################################
 ## saving results
@@ -177,22 +181,48 @@ final_table <- final_table[,c(ncol(final_table),2:(ncol(final_table)-1))]
 #table(final_table$region,final_table$clust)
 final_table$clust <- as.factor(as.character(clust_per))
 tapply(final_table$clust,final_table$clust,length)
-saveRDS(final_table,paste0(trans_results_dir,"/","cluster_table.RDS"))
+saveRDS(final_table,paste0(trans_results_dir,"/","cluster_table_NO_REGION.RDS"))
 ################################
 ## Visualize results
 
-         
+
 # 
 # factoextra::fviz_dend(res, rect = TRUE, cex = 0.5,
 #          k_colors = c("#00AFBB","#FC4E07", "#E7B800" )) #"#FC4E07"
 
 #http://www.sthda.com/english/rpkgs/factoextra/reference/fviz_dend.html
 dend_plot <- factoextra::fviz_dend(ClusterEvents_sc,k=3, rect = TRUE, cex = 0.5,
-                      k_colors = c("blue", "green3", "red")
-                      #k_colors = c("#00AFBB","#FC4E07", "#E7B800" )
-                      ) #"#FC4E07"
-ggsave(paste0(plot_cluster_dir,"/","dendogram","_",Sys.Date(),".png"),dend_plot, units="in",width=30,height=9,scale=1,dpi=600)
+                                   k_colors = c("blue", "green3", "red")
+                                   #k_colors = c("#00AFBB","#FC4E07", "#E7B800" )
+) #"#FC4E07"
+ggsave(paste0(plot_cluster_dir,"/","dendogram","_NO_REGION_",Sys.Date(),".png"),dend_plot, units="in",width=30,height=9,scale=1,dpi=600)
 
 
-dend_final <- list(tree=ClusterEvents_sc,clust=clust_per)
-saveRDS(dend_final,paste0(trans_results_dir,"/","cluster_tree.RDS"))
+
+########COMPARING TREE RESULTS
+#https://cran.r-project.org/web/packages/dendextend/vignettes/introduction.html
+
+dend_final <-readRDS(paste0(trans_results_dir,"/","cluster_tree.RDS"))
+
+
+
+
+dend1 <- as.dendrogram (dend_final$tree)
+dend2 <- as.dendrogram (ClusterEvents_sc)
+
+dend_list <- dendlist(dend1, dend2)
+
+png(paste0(plot_cluster_dir,"/","tanglegram","_NO_REGION_",Sys.Date(),".png"),width = 900,height = 700)   
+
+#tang <-
+dendextend::tanglegram(dend1, dend2,
+           highlight_distinct_edges = FALSE, # Turn-off dashed lines
+           common_subtrees_color_lines = FALSE, # Turn-off line colors
+           common_subtrees_color_branches = TRUE, # Color common branches
+           main = paste("entanglement =", round(entanglement(dend_list), 2))
+)
+dev.off()
+
+# Cophenetic correlation matrix
+#cor.dendlist(dend_list, method = "cophenetic")
+#corrplot::corrplot(cor.dendlist(dend_list, method = "cophenetic"))
