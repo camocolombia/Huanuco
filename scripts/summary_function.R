@@ -20,7 +20,7 @@ plot_reg_dir <- paste0(plot_dir,"/","region");if(!file.exists(plot_reg_dir)){dir
 #Reading RDS file to be used in clustering
 
 final_table <- readRDS(paste0(trans_results_dir,"/","cluster_table.RDS"))
-final_table <- final_table[,-c(3,5)]
+final_table <- final_table[,-c(1)]
 clus<-unique(final_table$clust)
 
 tmp<-list()
@@ -99,4 +99,5 @@ final<-do.call("rbind",tmp)
 final<-rbind(total,final)
 final$item <- row.names(final)
 final <- final[,c(8,1:7)]
+final <- final[complete.cases(final$n),]
 write.table(final,paste0(trans_results_dir,"/","SUMMARY_CLUSTER.csv"),quote=F,row.names = F,sep = "|")

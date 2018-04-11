@@ -26,7 +26,7 @@ clus<-unique(final_table$clust)
 
 tmp<-list()
 #i=1
-df <- final_table
+df <- final_table[,-1]
 df2<-df[,2:(ncol(df)-1)]#11
 
 for(i in 1:length(clus)){
@@ -100,4 +100,5 @@ final<-do.call("rbind",tmp)
 final<-rbind(total,final)
 final$item <- row.names(final)
 final <- final[,c(8,1:7)]
+final <- final[complete.cases(final$n),]
 write.table(final,paste0(trans_results_dir,"/","SUMMARY_CLUSTER_NO_REGION.csv"),quote=F,row.names = F,sep = "|")

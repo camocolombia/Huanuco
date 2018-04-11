@@ -177,11 +177,13 @@ coefHier(ClusterEvents_sc) # ditto
 
 final_table$ID <- row.names(final_table)
 
-final_table <- final_table[,c(ncol(final_table),2:(ncol(final_table)-1))]
+final_table <- final_table[,c(ncol(final_table),1:(ncol(final_table)-1))]
 #table(final_table$region,final_table$clust)
 final_table$clust <- as.factor(as.character(clust_per))
 tapply(final_table$clust,final_table$clust,length)
 saveRDS(final_table,paste0(trans_results_dir,"/","cluster_table_NO_REGION.RDS"))
+write.table(final_table,paste0(trans_results_dir,"/","cluster_table_NO_REGION.csv"),row.names=F,sep="|")
+
 ################################
 ## Visualize results
 

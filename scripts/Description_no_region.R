@@ -24,6 +24,7 @@ plot_descrip_dir <- paste0(plot_dir,"/","description");if(!file.exists(plot_desc
 tab3 <- readRDS(paste0(trans_results_dir,"/","firstStep.RDS"))
 final_table <- readRDS(paste0(trans_results_dir,"/","cluster_table_NO_REGION.RDS"))
 
+region <- readRDS(paste0(trans_results_dir,"/","cluster_table.RDS"))$region
 
 ################################
 #Ommiting variables with NAs
@@ -96,14 +97,14 @@ write.table(fish_table,paste0(trans_results_dir,"/","fisher_NO_REGION.csv"),quot
 ################################
 #Calculating correlations for numerical variables
 
-cor2 <- cor(tab3_alt2[,c(1,2,4,6,7,14:27)])
-png(paste0(plot_descrip_dir,"/","corrplot","_",Sys.Date(),".png"),width = 900,height = 900)   
-corrplot::corrplot(cor2)
-dev.off()
-cor2 <- as.data.frame(as.matrix(cor2))
-cor2$variable <- row.names(cor2)
-cor2 <- cor2[,c(ncol(cor2),1:(ncol(cor2)-1))]
-write.table(cor2,paste0(trans_results_dir,"/","correlations.csv"),quote=F,row.names = F,sep="|")
+# cor2 <- cor(tab3_alt2[,c(2,3,4,6,7,14:27)])
+# png(paste0(plot_descrip_dir,"/","corrplot","_",Sys.Date(),".png"),width = 900,height = 900)   
+# corrplot::corrplot(cor2)
+# dev.off()
+# cor2 <- as.data.frame(as.matrix(cor2))
+# cor2$variable <- row.names(cor2)
+# cor2 <- cor2[,c(ncol(cor2),1:(ncol(cor2)-1))]
+# write.table(cor2,paste0(trans_results_dir,"/","correlations.csv"),quote=F,row.names = F,sep="|")
 
 ################################
 #Boxplots per variable
@@ -111,7 +112,7 @@ black.bold.italic.16.text <- element_text(face = "italic", color = "black", size
 
 numerical <- tab3_alt2[,c(2,3,5,7,13:26)]
 numerical$cluster <- NA; numerical$cluster <- final_table$clust
-numerical$region <- NA;numerical$region  <- final_table$region
+numerical$region <- NA;numerical$region  <- region
 for( i in 1:(ncol(numerical)-2)){
   cat(i,"\n")
   
